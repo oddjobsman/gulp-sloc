@@ -1,0 +1,35 @@
+{
+  "name": "gulp-sloc",
+  "version": "0.0.0",
+  "description": "A port of the grunt-sloc plugin for gulp",
+  "main": "sloc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:oddjobsman/gulp-sloc.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "sloc"
+  ],
+  "author": "oddjobsman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oddjobsman/gulp-sloc/issues"
+  },
+  "homepage": "https://github.com/oddjobsman/gulp-sloc",
+  "dependencies": {
+    "sloc": "0.0.4",
+    "gulp": "~3.2.2",
+    "gulp-util": "~2.2.5",
+    "event-stream": "~3.0.20"
+  },
+  "devDependencies": {
+    "gulp-mocha": "~0.1.3",
+    "expect.js": "~0.2.0",
+    "gulp-jshint": "~1.3.3",
+    "mocha": "~1.16.2"
+  }
+}
