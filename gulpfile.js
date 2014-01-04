@@ -27,8 +27,7 @@ gulp.task('test', function () {
 
 gulp.task('sloc', function () {
   gulp.src(['./gulpfile.js', './index.js'])
-    .pipe(sloc())
-    .pipe(gulp.dest('./output/'));
+    .pipe(sloc());
 });
 
 gulp.task('default', ['lint', 'test', 'sloc'], function () {
