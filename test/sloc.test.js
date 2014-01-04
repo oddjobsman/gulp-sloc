@@ -62,15 +62,7 @@ describe('gulp-sloc', function () {
         var lines = writtenValue.split('\n');
 
         try {
-          validateOutput(lines, {
-            loc: 1,
-            sloc: 1,
-            cloc: 0,
-            scloc: 0,
-            mcloc: 0,
-            nloc: 0,
-            file: 1
-          }, true);
+          validateOutput(lines, {loc: 1, sloc: 1, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 1}, true);
 
           restoreStdout();
           done();
@@ -97,15 +89,7 @@ describe('gulp-sloc', function () {
         var lines = writtenValue.split('\n');
 
         try {
-          validateOutput(lines, {
-            loc: 2,
-            sloc: 2,
-            cloc: 0,
-            scloc: 0,
-            mcloc: 0,
-            nloc: 0,
-            file: 2
-          }, true);
+          validateOutput(lines, {loc: 2, sloc: 2, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 2}, true);
 
           restoreStdout();
           done();
@@ -132,15 +116,7 @@ describe('gulp-sloc', function () {
         var lines = writtenValue.split('\n');
 
         try {
-          validateOutput(lines, {
-            loc: 3,
-            sloc: 3,
-            cloc: 0,
-            scloc: 0,
-            mcloc: 0,
-            nloc: 0,
-            file: 3
-          }, false);
+          validateOutput(lines, {loc: 3, sloc: 3, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 3}, false);
 
           restoreStdout();
           done();
