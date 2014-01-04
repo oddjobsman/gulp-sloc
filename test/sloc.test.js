@@ -185,7 +185,7 @@ describe('gulp-sloc', function () {
     it('should calculate sloc in tolerant mode on all specified input files and send Json file downstream with default filename', function (done) {
       var stream = sloc({
         tolerant: true,
-        reportType: 'json',
+        reportType: 'json'
       });
       var expectedResults = {loc: 3, sloc: 3, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 3};
 
