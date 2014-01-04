@@ -1,20 +1,17 @@
 'use strict';
 
-var context = describe;
-
 var path = require('path');
 var util = require('util')
 
+var _ = require('underscore');
 var expect = require('expect.js');
 var gutil = require('gulp-util');
-var stripAnsi = require('strip-ansi');
 
 var File = gutil.File;
 var colors = gutil.colors;
 var interceptStdout = require('./intercept_stdout');
 
 var sloc = require('../');
-
 
 function makeFakeFile(filePath, contents) {
   return new File({
@@ -41,6 +38,8 @@ function validateOutput(lines, counters, strict) {
   } else {
     expect(lines[9]).to.be(util.format('[%s] %s', colors.green('gulp'), colors.yellow('         tolerant mode ')));
   }
+
+  expect(lines[10]).to.be(util.format('[%s] -------------------------------', colors.green('gulp')));
 }
 
 describe('gulp-sloc', function () {
@@ -56,14 +55,9 @@ describe('gulp-sloc', function () {
     });
 
     it('should calculate sloc in strict mode on a single input file and print to console by default', function (done) {
-      var file = makeFakeFile('/a/b/foo.js', 'var a = 10;');
       var stream = sloc();
       var restoreStdout;
 
-      stream.on('error', function () {
-        console.log('Error!');
-      });
-    
       stream.on('end', function () {
         var lines = writtenValue.split('\n');
 
@@ -87,13 +81,11 @@ describe('gulp-sloc', function () {
       });
 
       restoreStdout = interceptStdout(updateConsoleValue);
-      stream.write(file);
+      stream.write(makeFakeFile('/a/b/foo.js', 'var a = 10;'));
       stream.end();
     });
 
     it('should calculate sloc in strict mode on all specified input files and print to console by default', function (done) {
-      var firstFile = makeFakeFile('/a/b/foo.js', 'var a = 10;');
-      var secondFile = makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;');
       var stream = sloc();
       var restoreStdout;
 
@@ -124,35 +116,30 @@ describe('gulp-sloc', function () {
       });
 
       restoreStdout = interceptStdout(updateConsoleValue);
-      stream.write(firstFile);
-      stream.write(secondFile);
+      stream.write(makeFakeFile('/a/b/foo.js', 'var a = 10;'));
+      stream.write(makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;'));
+      stream.write(makeFakeFile('/a/b/moo.bak', 'var a = 10, b= 20;'));   // this file should be ignored
       stream.end();
     });
 
     it('should calculate sloc in tolerant mode on all specified input files and print to console by default', function (done) {
-      var firstFile = makeFakeFile('/a/b/foo.js', 'var a = 10;');
-      var secondFile = makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;');
       var stream = sloc({
         tolerant: true
       });
       var restoreStdout;
 
-      stream.on('error', function () {
-        console.log('Error!');
-      });
-    
       stream.on('end', function () {
         var lines = writtenValue.split('\n');
 
         try {
           validateOutput(lines, {
-            loc: 2,
-            sloc: 2,
+            loc: 3,
+            sloc: 3,
             cloc: 0,
             scloc: 0,
             mcloc: 0,
             nloc: 0,
-            file: 2
+            file: 3
           }, false);
 
           restoreStdout();
@@ -164,8 +151,109 @@ describe('gulp-sloc', function () {
       });
 
       restoreStdout = interceptStdout(updateConsoleValue);
-      stream.write(firstFile);
-      stream.write(secondFile);
+      stream.write(makeFakeFile('/a/b/foo.js', 'var a = 10;'));
+      stream.write(makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;'));
+      stream.write(makeFakeFile('/a/b/moo.bak', 'var a = 10, b= 20;'));   // this file not should be ignored
+      stream.end();
+    });
+
+    it('should calculate sloc in strict mode on all specified input files and send Json file downstream with default filename', function (done) {
+      var stream = sloc({
+        reportType: 'json'
+      });
+      var expectedResults = {loc: 2, sloc: 2, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 2};
+
+      stream.on('data', function (file) {
+        expect(path.basename(file.path)).to.be('sloc.json');
+
+        var results = JSON.parse(file.contents.toString('utf8'));
+
+        _.each(expectedResults, function (value, key) {
+          expect(results[key]).to.be(value);
+        });
+
+        done();
+      });
+
+      stream.write(makeFakeFile('/a/b/foo.js', 'var a = 10;'));
+      stream.write(makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;'));
+      stream.write(makeFakeFile('/a/b/moo.bak', 'var a = 10, b= 20;'));   // this file should be ignored
+      stream.end();
+    });
+
+    it('should calculate sloc in strict mode on all specified input files and send Json file downstream with specified filename', function (done) {
+      var stream = sloc({
+        reportType: 'json',
+        reportFile: 'all.json'
+      });
+      var expectedResults = {loc: 2, sloc: 2, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 2};
+
+      stream.on('data', function (file) {
+        expect(path.basename(file.path)).to.be('all.json');
+
+        var results = JSON.parse(file.contents.toString('utf8'));
+
+        _.each(expectedResults, function (value, key) {
+          expect(results[key]).to.be(value);
+        });
+
+        done();
+      });
+
+      stream.write(makeFakeFile('/a/b/foo.js', 'var a = 10;'));
+      stream.write(makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;'));
+      stream.write(makeFakeFile('/a/b/moo.bak', 'var a = 10, b= 20;'));   // this file should be ignored
+      stream.end();
+    });
+
+    it('should calculate sloc in tolerant mode on all specified input files and send Json file downstream with default filename', function (done) {
+      var stream = sloc({
+        tolerant: true,
+        reportType: 'json',
+      });
+      var expectedResults = {loc: 3, sloc: 3, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 3};
+
+      stream.on('data', function (file) {
+        expect(path.basename(file.path)).to.be('sloc.json');
+
+        var results = JSON.parse(file.contents.toString('utf8'));
+
+        _.each(expectedResults, function (value, key) {
+          expect(results[key]).to.be(value);
+        });
+
+        done();
+      });
+
+      stream.write(makeFakeFile('/a/b/foo.js', 'var a = 10;'));
+      stream.write(makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;'));
+      stream.write(makeFakeFile('/a/b/moo.bak', 'var a = 10, b= 20;'));   // this file should not be ignored
+      stream.end();
+    });
+
+    it('should calculate sloc in tolerant mode on all specified input files and send Json file downstream with specified filename', function (done) {
+      var stream = sloc({
+        tolerant: true,
+        reportType: 'json',
+        reportFile: 'all.json'
+      });
+      var expectedResults = {loc: 3, sloc: 3, cloc: 0, scloc: 0, mcloc: 0, nloc: 0, file: 3};
+
+      stream.on('data', function (file) {
+        expect(path.basename(file.path)).to.be('all.json');
+
+        var results = JSON.parse(file.contents.toString('utf8'));
+
+        _.each(expectedResults, function (value, key) {
+          expect(results[key]).to.be(value);
+        });
+
+        done();
+      });
+
+      stream.write(makeFakeFile('/a/b/foo.js', 'var a = 10;'));
+      stream.write(makeFakeFile('/a/b/boo.js', 'var a = 10, b= 20;'));
+      stream.write(makeFakeFile('/a/b/moo.bak', 'var a = 10, b= 20;'));   // this file should not be ignored
       stream.end();
     });
 

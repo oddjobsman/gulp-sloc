@@ -7,16 +7,16 @@ var gutil = require('gulp-util');
 var sloc = require('sloc');
 
 function gulpSloc(options) {
+  var supportedExtensions = ['js', 'cc', 'c', 'coffeescript', 'coffee', 'python', 'py', 'java', 'php'];
+  var log = gutil.log;
+  var colors = gutil.colors;
+  var File = gutil.File;
+
   options = _.extend({
     tolerant: false,
     reportType: 'stdout',
     reportFile: 'sloc.json'
   }, (options || {}));
-
-  var supportedExtensions = ['js', 'cc', 'c', 'coffeescript', 'coffee', 'python', 'py', 'java', 'php'];
-  var log = gutil.log;
-  var colors = gutil.colors;
-  var File = gutil.File;
 
   if (options.reportType === 'json' && _.isEmpty(options.reportFile)) {
     throw new gutil.PluginError('gulp-sloc', 'Invalid report file. Provide a valid file name for reportFile in options.');
