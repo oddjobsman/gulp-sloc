@@ -1,7 +1,7 @@
 gulp-sloc
 =========
 
-A port of the grunt-sloc plugin for gulp with some minor changes.
+A port of the [grunt-sloc](https://github.com/rhiokim/grunt-sloc) plugin for gulp with some minor changes.
 
 [![build status](https://secure.travis-ci.org/oddjobsman/circuitbox.png)](http://travis-ci.org/oddjobsman/circuitbox)
 [![dependency status](https://david-dm.org/oddjobsman/circuitbox.png)](https://david-dm.org/oddjobsman/circuitbox)
