@@ -1,7 +1,7 @@
 'use strict';
 
 var path = require('path');
-var _ = require('underscore');
+var _ = require('lodash');
 var es = require('event-stream');
 var gutil = require('gulp-util');
 var sloc = require('sloc');

@@ -3,7 +3,7 @@
 var path = require('path');
 var util = require('util')
 
-var _ = require('underscore');
+var _ = require('lodash');
 var expect = require('expect.js');
 var gutil = require('gulp-util');
 

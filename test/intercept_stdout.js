@@ -1,6 +1,6 @@
 // originally from the gist - https://gist.github.com/benbuckman/2758563#file-intercept-stdout-js
 // thanks to https://github.com/benbuckman for this!
-var _ = require('underscore'),
+var _ = require('lodash'),
     util = require('util');
  
 // intercept stdout, passes thru callback
