@@ -5,6 +5,7 @@ A port of the [grunt-sloc](https://github.com/rhiokim/grunt-sloc) plugin for gul
 
 [![build status](https://secure.travis-ci.org/oddjobsman/gulp-sloc.png)](http://travis-ci.org/oddjobsman/gulp-sloc)
 [![dependency status](https://david-dm.org/oddjobsman/gulp-sloc.png)](https://david-dm.org/oddjobsman/gulp-sloc)
+[![Coverage Status](https://coveralls.io/repos/oddjobsman/gulp-sloc/badge.png)](https://coveralls.io/r/oddjobsman/gulp-sloc)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/oddjobsman/gulp-sloc/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 [![NPM](https://nodei.co/npm/gulp-sloc.png?stars=true&downloads=true)](https://nodei.co/npm/gulp-sloc/)
