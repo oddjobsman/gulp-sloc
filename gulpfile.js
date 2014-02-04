@@ -1,40 +1,51 @@
 'use strict';
 
 var fs = require('fs');
+
 var gulp = require('gulp');
-var tasks = require('gulp-load-tasks')({scope: ['devDependencies']});
-var stylish = require('jshint-stylish');
+var tasks = require('gulp-load-plugins')({scope: ['devDependencies']});
 
-var sloc = require('./index');
+var plumber = tasks.plumber;
 
-function loadJsHintConfig() {
-  return JSON.parse(String(fs.readFileSync('./.jshintrc', 'utf8')));
-}
-
-gulp.task('lint', function () {
+gulp.task('lint', function (done) {
   var jshint = tasks.jshint,
-      config = loadJsHintConfig();
+      stylish = require('jshint-stylish'),
+      config = JSON.parse(String(fs.readFileSync('./.jshintrc', 'utf8')));
 
-  gulp.src(['./gulpfile.js', './index.js'])
+  gulp.src(['./gulpfile.js', './index.js', './test/sloc.test.js'])
+    .pipe(plumber())
     .pipe(jshint(config))
-    .pipe(jshint.reporter(stylish));
+    .pipe(jshint.reporter(stylish))
+    .on('end', function () {
+      done();
+    });
 });
 
-gulp.task('test', function () {
+gulp.task('test', ['lint'], function (done) {
   gulp.src('./test/**/*.js')
-    .pipe(tasks.mocha({reporter: 'spec'}));
+    .pipe(plumber())
+    .pipe(tasks.mocha({reporter: 'spec'}))
+    .on('end', function () {
+      done();
+    });
 });
 
-gulp.task('sloc', function () {
+gulp.task('sloc', ['test'], function (done) {
+  var sloc = require('./index');
+
   gulp.src(['./gulpfile.js', './index.js'])
-    .pipe(sloc());
+    .pipe(plumber())
+    .pipe(sloc())
+    .on('end', function () {
+      done();
+    });
 });
 
-gulp.task('default', ['lint', 'test', 'sloc'], function () {
+gulp.task('default', ['sloc'], function () {
   gulp.watch(['./gulpfile.js', './index.js'], function (event) {
     console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-    gulp.run('lint', 'test', 'sloc');
+    gulp.run('sloc');
   });
 });
 
-gulp.task('ci', ['lint', 'test', 'sloc'], function () {});
+gulp.task('ci', ['sloc'], function () {});
