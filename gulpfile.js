@@ -16,18 +16,14 @@ gulp.task('lint', function (done) {
     .pipe(plumber())
     .pipe(jshint(config))
     .pipe(jshint.reporter(stylish))
-    .on('end', function () {
-      done();
-    });
+    .on('end', done);
 });
 
 gulp.task('test', ['lint'], function (done) {
   gulp.src('./test/**/*.js')
     .pipe(plumber())
     .pipe(tasks.mocha({reporter: 'spec'}))
-    .on('end', function () {
-      done();
-    });
+    .on('end', done);
 });
 
 gulp.task('sloc', ['test'], function (done) {
@@ -36,15 +32,13 @@ gulp.task('sloc', ['test'], function (done) {
   gulp.src(['./gulpfile.js', './index.js'])
     .pipe(plumber())
     .pipe(sloc())
-    .on('end', function () {
-      done();
-    });
+    .on('end', done);
 });
 
 gulp.task('default', ['sloc'], function () {
   gulp.watch(['./gulpfile.js', './index.js'], function (event) {
     console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-    gulp.run('sloc');
+    gulp.start('sloc');
   });
 });
 
