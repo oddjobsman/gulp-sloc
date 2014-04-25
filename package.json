@@ -1,6 +1,6 @@
 {
   "name": "gulp-sloc",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A port of the grunt-sloc plugin for gulp",
   "main": "index.js",
   "scripts": {
