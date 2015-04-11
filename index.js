@@ -7,7 +7,7 @@ var gutil = require('gulp-util');
 var sloc = require('sloc');
 
 function gulpSloc(options) {
-  var supportedExtensions = ['js', 'cc', 'c', 'coffeescript', 'coffee', 'python', 'py', 'java', 'php'];
+  var supportedExtensions = ['js', 'html', 'cc', 'c', 'coffeescript', 'coffee', 'python', 'py', 'java', 'php'];
   var log = gutil.log;
   var colors = gutil.colors;
   var File = gutil.File;
